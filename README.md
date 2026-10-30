@@ -29,11 +29,15 @@ modules ES bloqués par CORS.
 
 Le driver MFC provient de
 [`PE-FAS-IND/webserial_instrument-core`](https://github.com/PE-FAS-IND/webserial_instrument-core)
-(branche `feat/typescript-core`). Sa distribution n'est pas commitée :
+(branche `feat/typescript-core`). Sa distribution est commitée dans
+`src/vendor/webserial-core/` — GitHub Pages ne déploie que le contenu du dépôt. Pour la
+mettre à jour :
 
 ```powershell
 pwsh ./scripts/vendor-core.ps1
 ```
+
+Puis incrémenter `CACHE_VERSION` dans `sw.js`.
 
 ## Documentation
 

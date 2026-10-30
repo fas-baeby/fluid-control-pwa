@@ -31,7 +31,7 @@ fluid-control-pwa/
 │   ├── app.js                      composition : DOM ↔ domaine
 │   ├── firmware-file.js            domaine : lecture/validation du fichier
 │   ├── firmware-service.js         adaptateur @fas/webserial-core (seul point d'intégration)
-│   └── vendor/webserial-core/      distribution ESM de la librairie (non commitée)
+│   └── vendor/webserial-core/      distribution ESM de la librairie (générée, commitée)
 ├── scripts/vendor-core.ps1         installation/mise à jour de la librairie
 └── docs/ARCHITECTURE.md            ce document
 ```
@@ -108,23 +108,27 @@ du dossier. Pour travailler depuis un clone local :
 pwsh ./scripts/vendor-core.ps1 -Source C:\data\github_repo\webserial_instrument-core
 ```
 
-Après copie, rechargez la page : la bannière d'avertissement disparaît.
+Après copie, **committez `src/vendor/webserial-core/`** et incrémentez `CACHE_VERSION` dans
+[sw.js](../sw.js).
 
-### 4.4 ⚠️ Visibilité du dépôt
+### 4.4 La distribution est commitée — et pourquoi
 
-`@fas/webserial-core` est **privée** et déclarée `UNLICENSED`. Publier `src/vendor/` sur
-GitHub Pages rend son code lisible par tous. `.gitignore` exclut donc le dossier par défaut.
+GitHub Pages publie **uniquement le contenu du dépôt**. Un `src/vendor/` ignoré n'est jamais
+déployé : l'import dynamique échoue en production et l'application affiche « librairie non
+installée » alors qu'elle fonctionne en local. Ces 48 fichiers sont donc versionnés.
 
-Deux scénarios :
+Conséquence à assumer : `@fas/webserial-core` est privée et déclarée `UNLICENSED`. Si
+`fluid-control-pwa` est public, son code devient lisible par tous — dans le dépôt comme sur
+le site. **Un site Pages est public dès que le dépôt l'est** ; seul GitHub Enterprise permet
+un Pages privé.
 
-- **Dépôt `fluid-control-pwa` privé** (Pages privé = GitHub Enterprise requis), ou publication
-  acceptée : retirez la règle de `.gitignore` et committez `src/vendor/webserial-core/`.
-- **Dépôt public** : gardez l'exclusion et injectez la librairie au déploiement via un workflow
-  GitHub Actions qui clone la librairie avec un token, exécute `vendor-core.ps1`, puis publie
-  l'artefact sur Pages. Le code reste hors du dépôt mais devient public sur le site — la
-  seule protection réelle est un Pages privé.
+Si cette exposition devient un problème, la seule alternative est d'injecter la librairie au
+déploiement via un workflow Actions (clone avec token, `vendor-core.ps1`, publication de
+l'artefact). Le code sort alors du dépôt mais reste téléchargeable depuis le site : cela
+protège l'historique Git, pas le code lui-même.
 
-**Décision à prendre avant le premier déploiement.**
+Règle de travail : `src/vendor/` est **généré**. Ne jamais l'éditer à la main, toute
+modification est écrasée par `vendor-core.ps1`.
 
 ### 4.5 Séquence de mise à jour firmware
 
@@ -237,9 +241,9 @@ Stratégie volontairement simple :
 > effet. D'où le *stale-while-revalidate* sur la même origine. Pendant le développement,
 > cochez « Update on reload » dans l'onglet Application des DevTools.
 
-La distribution de la librairie n'est pas dans `APP_SHELL` : elle est mise en cache
-opportunément au premier usage, ce qui évite un échec d'installation du service worker quand
-le dossier `vendor/` est absent.
+La distribution de la librairie n'est pas dans `APP_SHELL` : ses noms de chunks sont des
+empreintes qui changent à chaque build, les lister figerait une version. Elle est mise en
+cache opportunément au premier usage.
 
 ## 6. Feuille de route
 

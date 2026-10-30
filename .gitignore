@@ -1,7 +1,6 @@
-# Distribution @fas/webserial-core : installee localement, jamais commitee.
-# Voir src/vendor/webserial-core/README.md
-src/vendor/webserial-core/*
-!src/vendor/webserial-core/README.md
+# La distribution @fas/webserial-core (src/vendor/webserial-core/) est COMMITEE :
+# GitHub Pages ne publie que le contenu du depot, un dossier ignore n'y arriverait jamais.
+# Mise a jour : pwsh ./scripts/vendor-core.ps1
 
 node_modules/
 .playwright-mcp/
