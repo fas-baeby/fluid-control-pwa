@@ -6,9 +6,10 @@ natifs et [Bulma](https://bulma.io/) en CDN.
 
 ## État
 
-Étape 1 : interface de sélection et de validation d'une image de firmware (`.bin`), avec
-affichage de la taille, de la date et de l'empreinte SHA-256. Le transfert série est préparé
-mais pas encore activé.
+Connexion au MFC avec **détection automatique de la vitesse** (115200 → 9600) et lecture de
+l'identification, puis sélection/validation d'une image de firmware (`.bin`, SHA-256) et
+transfert : déverrouillage du bootloader, envoi YMODEM avec barre de progression et journal
+d'étapes.
 
 ## Prérequis
 

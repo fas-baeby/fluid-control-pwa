@@ -128,21 +128,32 @@ Deux scénarios :
 
 ### 4.5 Séquence de mise à jour firmware
 
-Déjà câblée dans [src/firmware-service.js](../src/firmware-service.js), à activer en étape 2 :
+Implémentée dans [src/firmware-service.js](../src/firmware-service.js) :
 
 ```js
 const mfc = createChipreg({ address: "ff" });   // "ff" = broadcast
-await mfc.connect();                            // requestPort() + open() — geste utilisateur requis
+await mfc.connect({ baudRate: 115200 });        // requestPort() + open() — geste utilisateur requis
 
 // 1. Déverrouillage : GOBW puis challenges FWDW/FWCW (bootloader, patcher, application)
-const sequence = await runFirmwareUpdateSequence(mfc, { onStep: console.log });
+const sequence = await runFirmwareUpdateSequence(mfc, { onStep });
 
-// 2. Le MFC a redémarré en bootloader : le port doit être rouvert
+// 2. Resynchronisation obligatoire après le redémarrage du MCU
 await mfc.reconnect();
 
 // 3. Transfert YMODEM (blocs 1024 o, CRC16 Modbus — pas le CCITT standard)
-await sendChipregFirmware(mfc, bytes, { fileName, onProgress: console.log });
+await sendChipregFirmware(mfc, bytes, { fileName, onProgress });
+
+await mfc.disconnect();
 ```
+
+> **Le `reconnect()` de l'étape 2 n'est pas optionnel.** Après `requestApplicationUpdate`, le
+> MCU a redémarré en bootloader : le port doit être fermé puis rouvert pour se
+> resynchroniser avant le premier bloc. L'implémentation de référence validée sur matériel
+> (`fas-digital-manufacturing`, méthode `enterBinaryMode()`) fait exactement cela.
+>
+> Les tests unitaires de la librairie ne couvrent **pas** ce point : ils s'exécutent sur un
+> transport simulé, où une resynchronisation n'a aucun sens. Ne pas en déduire que le
+> `reconnect()` est superflu.
 
 Détails qui comptent côté UI :
 
@@ -151,10 +162,58 @@ Détails qui comptent côté UI :
   `requestBootloaderUpdate`, `confirmBootloaderChallenge`, `requestPatcherUpdate`,
   `confirmPatcherChallenge`, `requestApplicationUpdate`).
 - `onProgress` fournit `{ sentBytes, totalBytes, block, percent }` → `progress` Bulma.
+- `sendChipregFirmware` renvoie `{ bytesSent, blocks, fileName, validated }` ; `validated`
+  à `false` signifie que le bootloader n'a pas renvoyé l'ACK final après le contrôle CRC32.
 - Le port série est **exclusif** : une seule connexion à la fois, `disconnect()` systématique
   dans un `finally`.
-- Après `jumpToBootloader`, prévoir le délai de redémarrage ; `ChipregMFC.reconnectWithRetries`
-  (API compat) illustre la stratégie de reprise.
+- `skipJump: true` sert quand l'appareil est déjà en bootloader (reprise après échec).
+
+#### Paramètres YMODEM
+
+Les valeurs par défaut de la librairie sont identiques à celles de la référence : blocs de
+1024 o (STX), `bootDelay` 1500 ms, `postHeaderDelay` 2000 ms, `firstBlockTimeout` 8000 ms,
+`blockTimeout` 1000 ms, `interBlockDelay` 20 ms, `maxRetries` 10, `validationTimeout`
+20 000 ms, padding `0x1A`, CRC16 Modbus. **Ne pas les modifier sans mesure sur matériel.**
+
+Le bootloader est *PC-initiated* : il n'émet pas de `C` de sollicitation après le reset,
+l'hôte envoie directement le bloc d'en-tête. Le baudrate ne change pas entre application et
+bootloader.
+
+### 4.6 Détection automatique de la vitesse
+
+L'opérateur n'a pas à connaître le baudrate configuré dans le MFC. `connectDevice()` ouvre le
+port une seule fois (`requestPort()`, geste utilisateur) puis balaie les vitesses avec
+`reopen({ baudRate })`, en interrogeant `IDER` à chaque essai :
+
+```
+115200 → 57600 → 38400 → 19200 → 9600
+```
+
+- La vitesse sélectionnée dans l'UI est **essayée en premier** : le cas courant coûte un
+  seul essai, la liste sert de repli.
+- Le critère de réussite est une trame `IDER` complète et **à checksum valide** : du bruit
+  généré par une mauvaise vitesse ne peut pas être pris pour une réponse.
+- `timeout` par essai : 1000 ms. Pire cas mesuré pour un appareil muet : ~8 s.
+- Si aucune vitesse ne répond, la session reste ouverte sur la vitesse préférée et
+  `identification` vaut `null` : un MFC déjà en bootloader ne répond à `IDER` sur aucune
+  vitesse mais accepte quand même un transfert.
+- À la réussite, la liste déroulante est mise à jour avec la vitesse détectée.
+
+### 4.7 Écarts assumés avec l'implémentation de référence
+
+| Point | Référence (`fas-digital-manufacturing`) | Ici |
+|---|---|---|
+| Sélection du port | `requestPort()` sans filtre | identique |
+| `getPorts()` (port déjà autorisé) | non utilisé | non utilisé |
+| Bouton « Connecter » séparé | oui, avec adresse + baudrate | identique |
+| Choix du baudrate | manuel, obligatoire | balayage automatique (§4.6) |
+| Événements `serial.connect/disconnect` | non gérés | non gérés |
+| Validation du fichier | aucune | extension `.bin` + 1 Mio max + SHA-256 |
+| Lecture `IDER` avant flash | non | oui, affichée à la connexion |
+| Reprise après échec | `CAN CAN CAN` + reconnexion avec retries | `CAN CAN CAN` (librairie) + déconnexion |
+
+La limite de 1 Mio est **arbitraire** : la référence n'en impose aucune. À ajuster sur la
+taille réelle de la flash du MFC.
 
 ### 4.6 Mise à jour de la librairie
 
@@ -168,8 +227,15 @@ Stratégie volontairement simple :
 
 - **Navigation** : réseau d'abord, cache en repli → un déploiement récent est pris en compte
   immédiatement, l'app reste utilisable hors ligne.
-- **Autres requêtes** : cache d'abord, puis réseau avec mise en cache (inclut le CSS Bulma du CDN).
+- **Même origine** (code applicatif, librairie) : *stale-while-revalidate* — réponse immédiate
+  depuis le cache, mise à jour en arrière-plan servie au chargement suivant.
+- **CDN Bulma** : cache d'abord sans revalidation (ressource immuable).
 - **Invalidation** : `CACHE_VERSION` dans le nom du cache, anciens caches supprimés à l'activation.
+
+> **Piège vécu :** un simple *cache-first* sur `src/*.js` fige le code applicatif jusqu'au
+> prochain changement de `CACHE_VERSION` — en développement, les modifications semblent sans
+> effet. D'où le *stale-while-revalidate* sur la même origine. Pendant le développement,
+> cochez « Update on reload » dans l'onglet Application des DevTools.
 
 La distribution de la librairie n'est pas dans `APP_SHELL` : elle est mise en cache
 opportunément au premier usage, ce qui évite un échec d'installation du service worker quand
@@ -180,10 +246,11 @@ le dossier `vendor/` est absent.
 | Étape | Contenu | État |
 |---|---|---|
 | 1 | Shell PWA + sélection/validation du fichier firmware | fait |
-| 2 | Connexion série, séquence de déverrouillage, transfert YMODEM avec barre de progression | à faire |
+| 2 | Connexion série, séquence de déverrouillage, transfert YMODEM avec barre de progression | fait |
 | 3 | Lecture d'identification (`IDER`) avant flash : contrôle de compatibilité de l'image | à faire |
 | 4 | Journal d'opération exportable (traçabilité atelier) | à faire |
 | 5 | Lecture temps réel (`SMFR`) et écriture de consigne (`MFSW`) | à faire |
+| 6 | Reprise après échec via `skipJump` quand le MFC est resté en bootloader | à faire |
 
 ## 7. Développement local
 

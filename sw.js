@@ -2,7 +2,7 @@
  * App shell precache. Incrementer CACHE_VERSION a chaque deploiement : GitHub Pages sert les
  * fichiers avec un cache navigateur agressif et seule une nouvelle version evince l'ancienne.
  */
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v5";
 const CACHE_NAME = `fluid-control-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -50,17 +50,27 @@ self.addEventListener("fetch", (event) => {
         return;
     }
 
+    const sameOrigin = new URL(request.url).origin === self.location.origin;
+
     event.respondWith(
-        caches.match(request).then(
-            (cached) =>
-                cached ??
-                fetch(request).then((response) => {
+        caches.open(CACHE_NAME).then(async (cache) => {
+            const cached = await cache.match(request);
+
+            // Le CDN est immuable : cache d'abord, sans revalidation.
+            if (cached && !sameOrigin) return cached;
+
+            const network = fetch(request)
+                .then((response) => {
                     if (response.ok && (response.type === "basic" || response.type === "cors")) {
-                        const copy = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+                        cache.put(request, response.clone());
                     }
                     return response;
-                }),
-        ),
+                })
+                .catch(() => cached);
+
+            // Code applicatif : reponse immediate depuis le cache, mise a jour en arriere-plan
+            // pour que le chargement suivant serve la derniere version deployee.
+            return cached ?? network;
+        }),
     );
 });

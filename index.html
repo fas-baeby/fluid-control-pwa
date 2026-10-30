@@ -22,7 +22,7 @@
 
             <header class="block">
                 <h1 class="title is-3">Mise a jour firmware MFC</h1>
-                <p class="subtitle is-6">Selectionnez l'image de firmware a transferer vers le regulateur de debit.</p>
+                <p class="subtitle is-6">Connectez le regulateur de debit, puis transferez l'image de firmware.</p>
             </header>
 
             <noscript>
@@ -34,6 +34,78 @@
             <div id="support-banner" class="notification is-warning is-hidden" role="alert"></div>
 
             <div class="box">
+                <h2 class="title is-5">
+                    1. Appareil
+                    <span class="tag is-light ml-2" id="connection-status">Deconnecte</span>
+                </h2>
+
+                <div class="field is-grouped is-align-items-flex-end">
+                    <div class="control">
+                        <label class="label is-small" for="device-address">Adresse</label>
+                        <input class="input" type="text" id="device-address" value="ff" maxlength="2" size="4"
+                            pattern="[0-9A-Fa-f]{2}" autocomplete="off" spellcheck="false">
+                    </div>
+                    <div class="control">
+                        <label class="label is-small" for="device-baudrate">Vitesse</label>
+                        <div class="select">
+                            <select id="device-baudrate">
+                                <option>9600</option>
+                                <option>19200</option>
+                                <option>38400</option>
+                                <option>57600</option>
+                                <option selected>115200</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control">
+                        <button class="button is-link" id="connect-button" type="button">Connecter</button>
+                    </div>
+                    <div class="control">
+                        <button class="button is-light" id="disconnect-button" type="button" disabled>
+                            Deconnecter
+                        </button>
+                    </div>
+                </div>
+                <p class="help">
+                    Adresse sur deux caracteres hexadecimaux, <code>ff</code> diffuse a tous les appareils.
+                    La vitesse est essayee en premier, puis les autres sont balayees automatiquement :
+                    inutile de connaitre celle configuree dans le MFC.
+                </p>
+
+                <div id="device-message" class="notification is-hidden mt-4" role="status"></div>
+
+                <table id="device-details" class="table is-fullwidth is-narrow is-hidden">
+                    <tbody>
+                        <tr>
+                            <th>Reference</th>
+                            <td id="device-part"></td>
+                        </tr>
+                        <tr>
+                            <th>Designation</th>
+                            <td id="device-description"></td>
+                        </tr>
+                        <tr>
+                            <th>Numero de serie</th>
+                            <td id="device-serial"></td>
+                        </tr>
+                        <tr>
+                            <th>Version logicielle</th>
+                            <td id="device-software"></td>
+                        </tr>
+                        <tr>
+                            <th>Version materielle</th>
+                            <td id="device-hardware"></td>
+                        </tr>
+                        <tr>
+                            <th>Pleine echelle</th>
+                            <td id="device-fullscale"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="box">
+                <h2 class="title is-5">2. Firmware</h2>
                 <div class="field">
                     <label class="label" for="firmware-input">Fichier de firmware</label>
                     <div class="control">
@@ -88,10 +160,17 @@
                 </div>
             </div>
 
+            <div class="box is-hidden" id="transfer-panel">
+                <h2 class="title is-5">3. Transfert</h2>
+                <progress class="progress is-primary" id="transfer-progress" value="0" max="100">0%</progress>
+                <div id="transfer-result" class="notification is-hidden" role="status"></div>
+                <ul id="transfer-steps" class="is-size-7"></ul>
+            </div>
+
             <footer class="content has-text-grey is-size-7">
                 <p>
-                    Le transfert serie sera active une fois la librairie
-                    <code>@fas/webserial-core</code> integree (voir <code>docs/ARCHITECTURE.md</code>).
+                    Ne debranchez pas l'appareil pendant le transfert : une interruption peut rendre
+                    le MFC inutilisable.
                 </p>
             </footer>
 
