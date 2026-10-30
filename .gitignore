@@ -1,0 +1,9 @@
+# Distribution @fas/webserial-core : installee localement, jamais commitee.
+# Voir src/vendor/webserial-core/README.md
+src/vendor/webserial-core/*
+!src/vendor/webserial-core/README.md
+
+node_modules/
+.playwright-mcp/
+.DS_Store
+Thumbs.db

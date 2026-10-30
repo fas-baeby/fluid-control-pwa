@@ -1,0 +1,27 @@
+{
+  "name": "Fluid Control - Mise a jour firmware MFC",
+  "short_name": "Fluid Control",
+  "description": "Outil de test et de mise a jour firmware des regulateurs de debit via la Web Serial API.",
+  "id": "/fluid-control-pwa/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#00205b",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "./assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

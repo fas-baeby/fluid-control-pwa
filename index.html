@@ -1,24 +1,104 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Projet Web Serial</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        h1 {
-            color: #0066cc;
-        }
-    </style>
+    <meta name="description"
+        content="Outil de test et de mise a jour firmware des regulateurs de debit (MFC) via la Web Serial API.">
+    <meta name="theme-color" content="#00205b">
+    <title>Fluid Control - Mise a jour firmware</title>
+
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./assets/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./assets/icons/icon.svg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/css/app.css">
 </head>
+
 <body>
-    <h1>Bienvenue sur mon projet PWA Web Serial !</h1>
-    <p>Cette page est hébergée gratuitement sur GitHub Pages.</p>
+    <section class="section">
+        <div class="container is-max-desktop">
+
+            <header class="block">
+                <h1 class="title is-3">Mise a jour firmware MFC</h1>
+                <p class="subtitle is-6">Selectionnez l'image de firmware a transferer vers le regulateur de debit.</p>
+            </header>
+
+            <noscript>
+                <div class="notification is-danger">
+                    Cette application necessite JavaScript.
+                </div>
+            </noscript>
+
+            <div id="support-banner" class="notification is-warning is-hidden" role="alert"></div>
+
+            <div class="box">
+                <div class="field">
+                    <label class="label" for="firmware-input">Fichier de firmware</label>
+                    <div class="control">
+                        <div class="file has-name is-fullwidth is-primary">
+                            <label class="file-label">
+                                <input class="file-input" type="file" id="firmware-input" name="firmware"
+                                    accept=".bin,application/octet-stream">
+                                <span class="file-cta">
+                                    <span class="file-label">Parcourir&hellip;</span>
+                                </span>
+                                <span class="file-name" id="firmware-name">Aucun fichier selectionne</span>
+                            </label>
+                        </div>
+                    </div>
+                    <p class="help">Image binaire <code>.bin</code>, 1 Mio maximum.</p>
+                </div>
+
+                <div id="firmware-error" class="notification is-danger is-light is-hidden" role="alert"></div>
+
+                <table id="firmware-details" class="table is-fullwidth is-narrow is-hidden">
+                    <tbody>
+                        <tr>
+                            <th>Nom</th>
+                            <td id="detail-name"></td>
+                        </tr>
+                        <tr>
+                            <th>Taille</th>
+                            <td id="detail-size"></td>
+                        </tr>
+                        <tr>
+                            <th>Modifie le</th>
+                            <td id="detail-modified"></td>
+                        </tr>
+                        <tr>
+                            <th>SHA-256</th>
+                            <td><code id="detail-digest" class="is-size-7"></code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="field is-grouped mt-4">
+                    <div class="control">
+                        <button class="button is-primary" id="flash-button" type="button" disabled>
+                            Transferer le firmware
+                        </button>
+                    </div>
+                    <div class="control">
+                        <button class="button is-light" id="reset-button" type="button" disabled>
+                            Reinitialiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="content has-text-grey is-size-7">
+                <p>
+                    Le transfert serie sera active une fois la librairie
+                    <code>@fas/webserial-core</code> integree (voir <code>docs/ARCHITECTURE.md</code>).
+                </p>
+            </footer>
+
+        </div>
+    </section>
+
+    <script type="module" src="./src/app.js"></script>
 </body>
+
 </html>

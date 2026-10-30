@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Fluid Control">
+  <rect width="512" height="512" fill="#00205b" />
+  <path d="M256 150c-46 54-72 92-72 123a72 72 0 0 0 144 0c0-31-26-69-72-123z" fill="#48c6ef" />
+  <rect x="180" y="352" width="152" height="22" rx="11" fill="#ffffff" />
+</svg>

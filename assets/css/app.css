@@ -1,0 +1,14 @@
+/* Overrides minimes : Bulma couvre le reste. */
+
+.file-name {
+    max-width: none;
+}
+
+#firmware-details th {
+    width: 10rem;
+    white-space: nowrap;
+}
+
+#detail-digest {
+    word-break: break-all;
+}
