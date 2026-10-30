@@ -1,5 +1,8 @@
 # Distribution @fas/webserial-core
 
+**Composant tiers — propriétaire, tous droits réservés.** Non couvert par le `LICENSE` de ce
+depot. Voir `NOTICE` a la racine.
+
 Copie generee de la distribution ESM de
 [`webserial_instrument-core`](https://github.com/PE-FAS-IND/webserial_instrument-core)
 (branche `feat/typescript-core`, dossier `dist/`).

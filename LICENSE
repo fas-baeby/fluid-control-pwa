@@ -1,0 +1,75 @@
+LICENCE PROPRIÉTAIRE — TOUS DROITS RÉSERVÉS
+
+Copyright (c) 2026 FAS. Tous droits réservés.
+
+1. PORTÉE
+
+   La présente licence s'applique à l'intégralité du contenu de ce dépôt, À
+   L'EXCEPTION du répertoire `src/vendor/`, qui contient des composants tiers
+   régis par leurs propres conditions. Voir le fichier NOTICE.
+
+2. ABSENCE DE CONCESSION DE DROITS
+
+   Aucun droit, licence, titre ou intérêt sur ce logiciel n'est concédé, de
+   manière expresse ou implicite, par estoppel ou autrement.
+
+   Sont notamment interdits, en l'absence d'autorisation écrite préalable du
+   titulaire des droits : l'utilisation, l'exécution, la copie, la
+   reproduction, la modification, l'adaptation, la traduction, la fusion, la
+   publication, la distribution, la sous-licence, la vente, la location, le
+   prêt, la mise à disposition, la création d'œuvres dérivées, ainsi que
+   l'ingénierie inverse, la décompilation et le désassemblage, dans la mesure
+   permise par le droit applicable.
+
+3. PUBLICATION SANS RENONCIATION
+
+   Ce dépôt est rendu accessible publiquement pour les seuls besoins de la
+   distribution technique de l'application (hébergement GitHub Pages). Cette
+   accessibilité ne constitue ni une cession, ni une licence, ni une
+   publication au sens du droit d'auteur, ni une renonciation à quelque droit
+   que ce soit. Les actions permises par les conditions d'utilisation de
+   GitHub (consultation, duplication du dépôt au sein de la plateforme) ne
+   confèrent aucun droit d'usage supplémentaire.
+
+4. ABSENCE DE GARANTIE
+
+   LE LOGICIEL EST FOURNI « EN L'ÉTAT », SANS GARANTIE D'AUCUNE SORTE,
+   EXPRESSE OU IMPLICITE, Y COMPRIS ET SANS S'Y LIMITER LES GARANTIES DE
+   QUALITÉ MARCHANDE, D'ADÉQUATION À UN USAGE PARTICULIER, DE CONFORMITÉ, DE
+   DISPONIBILITÉ ET D'ABSENCE DE CONTREFAÇON.
+
+5. LIMITATION DE RESPONSABILITÉ
+
+   CE LOGICIEL PILOTE DES ÉQUIPEMENTS INDUSTRIELS ET PROCÈDE À L'ÉCRITURE DE
+   MICROLOGICIELS EN MÉMOIRE NON VOLATILE. UNE UTILISATION INCORRECTE, UNE
+   IMAGE INADAPTÉE OU UNE INTERRUPTION DU TRANSFERT PEUVENT RENDRE
+   L'ÉQUIPEMENT DÉFINITIVEMENT INUTILISABLE.
+
+   EN AUCUN CAS LE TITULAIRE DES DROITS NE POURRA ÊTRE TENU RESPONSABLE DE
+   QUELQUE DOMMAGE QUE CE SOIT, DIRECT OU INDIRECT, MATÉRIEL OU IMMATÉRIEL,
+   Y COMPRIS LA DÉTÉRIORATION OU LA MISE HORS SERVICE D'ÉQUIPEMENTS, LA PERTE
+   DE DONNÉES, LA PERTE D'EXPLOITATION OU L'INTERRUPTION D'ACTIVITÉ, RÉSULTANT
+   DE L'UTILISATION OU DE L'IMPOSSIBILITÉ D'UTILISER CE LOGICIEL.
+
+6. DEMANDES D'AUTORISATION
+
+   Toute demande d'autorisation doit être adressée au titulaire des droits.
+
+---
+
+PROPRIETARY LICENSE — ALL RIGHTS RESERVED
+
+Copyright (c) 2026 FAS. All rights reserved.
+
+No permission is granted to use, copy, modify, distribute, sublicense or
+create derivative works of this software, in whole or in part, without the
+prior written consent of the copyright holder. Public availability of this
+repository serves the sole purpose of technical distribution via GitHub Pages
+and does not constitute a license or a waiver of any right.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. IT WRITES
+FIRMWARE TO INDUSTRIAL EQUIPMENT AND MAY RENDER SUCH EQUIPMENT PERMANENTLY
+INOPERABLE. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY ARISING FROM THE USE OF THIS SOFTWARE.
+
+This license does not cover the `src/vendor/` directory. See NOTICE.

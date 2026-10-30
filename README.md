@@ -43,3 +43,9 @@ Puis incrémenter `CACHE_VERSION` dans `sw.js`.
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — architecture, intégration de la librairie,
   séquence de mise à jour firmware, feuille de route.
+
+## Licence
+
+Propriétaire, tous droits réservés — voir [LICENSE](LICENSE). Le dépôt est public pour la
+seule distribution via GitHub Pages ; cela ne confère aucun droit d'usage. Composants tiers :
+[NOTICE](NOTICE).

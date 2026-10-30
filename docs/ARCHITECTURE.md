@@ -130,6 +130,13 @@ protège l'historique Git, pas le code lui-même.
 Règle de travail : `src/vendor/` est **généré**. Ne jamais l'éditer à la main, toute
 modification est écrasée par `vendor-core.ps1`.
 
+#### Licence
+
+Le dépôt est sous licence **propriétaire, tous droits réservés** ([LICENSE](../LICENSE)),
+qui exclut explicitement `src/vendor/` — ce dossier reste régi par les conditions de son
+dépôt d'origine, récapitulées dans [NOTICE](../NOTICE). Sans cette exclusion, un `LICENSE`
+à la racine relicencierait involontairement la librairie.
+
 ### 4.5 Séquence de mise à jour firmware
 
 Implémentée dans [src/firmware-service.js](../src/firmware-service.js) :

@@ -1,0 +1,22 @@
+# NOTICE — composants tiers
+
+Ce dépôt est régi par le fichier [LICENSE](LICENSE) (propriétaire, tous droits
+réservés), à l'exception des composants listés ci-dessous.
+
+## @fas/webserial-core — `src/vendor/webserial-core/`
+
+- Origine : https://github.com/PE-FAS-IND/webserial_instrument-core (branche `feat/typescript-core`)
+- Licence : propriétaire, tous droits réservés (`UNLICENSED`)
+- Nature : copie générée de la distribution `dist/`, produite par `scripts/vendor-core.ps1`
+
+Ce composant n'est **pas** couvert par le LICENSE de ce dépôt. Il reste régi par
+les conditions de son dépôt d'origine. Sa présence ici répond à une contrainte
+de déploiement — GitHub Pages ne publie que le contenu versionné — et ne vaut ni
+licence, ni autorisation de réutilisation.
+
+## Bulma
+
+- Origine : https://github.com/jgthms/bulma
+- Licence : MIT
+- Nature : chargé depuis un CDN (`cdn.jsdelivr.net`), **non redistribué** par ce
+  dépôt. Mentionné pour information.
